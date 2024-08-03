@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculator {
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .display {
+            background-color: #222;
+            color: #fff;
+            font-size: 2em;
+            text-align: right;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .buttons button {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            padding: 20px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: #666;
+        }
+        .buttons button:active {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button onclick="chooseOperation('/')">/</button>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button onclick="chooseOperation('*')">*</button>
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="chooseOperation('-')">-</button>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button onclick="calculate()">=</button>
+            <button onclick="chooseOperation('+')">+</button>
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">DEL</button>
+            <button onclick="appendNumber('(')">(</button>
+            <button onclick="appendNumber(')')">)</button>
+            <button onclick="calculateSquareRoot()">√</button>
+        </div>
+    </div>
+
+    <script>
+        let currentOperand = '';
+        let previousOperand = '';
+        let operation = null;
+
+        function appendNumber(number) {
+            if (number === '.' && currentOperand.includes('.')) return;
+            currentOperand = currentOperand.toString() + number.toString();
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('display').innerText = currentOperand || '0';
+        }
+
+        function chooseOperation(op) {
+            if (currentOperand === '' && op !== '-') return;
+            if (previousOperand !== '') {
+                calculate();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+            updateDisplay();
+        }
+
+        function calculate() {
+            let computation;
+            const expression = previousOperand + operation + currentOperand;
+            try {
+                computation = eval(expression);
+                if (isNaN(computation)) throw new Error("Invalid computation");
+            } catch (error) {
+                computation = "Error";
+            }
+            currentOperand = computation;
+            operation = null;
+            previousOperand = '';
+            updateDisplay();
+        }
+
+        function calculateSquareRoot() {
+            if (currentOperand === '') return;
+            currentOperand = Math.sqrt(parseFloat(currentOperand));
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentOperand = '';
+            previousOperand = '';
+            operation = null;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            currentOperand = currentOperand.toString().slice(0, -1);
+            updateDisplay();
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
